@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register | Donation Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+
+</head>
+<body>
+<div class="navbar">
+  <h2>Donation Portal</h2>
+  <div>
+    <a href="index.html">Home</a>
+    <a href="register.html">Register</a>
+    <a href="login.html">Login</a>
+    <a href="donate.html">Donate</a>
+    <a href="admin.html">Admin</a>
+  </div>
+</div>
+
+
+<h2>User Registration</h2>
+
+<form id="registerForm">
+  <input type="text" id="name" placeholder="Name" required><br><br>
+  <input type="email" id="email" placeholder="Email" required><br><br>
+  <input type="password" id="password" placeholder="Password" required><br><br>
+  <button type="submit">Register</button>
+</form>
+
+<p id="msg"></p>
+
+<script>
+document.getElementById("registerForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  const data = {
+    name: document.getElementById("name").value,
+    email: document.getElementById("email").value,
+    password: document.getElementById("password").value
+  };
+
+  const res = await fetch("/api/auth/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+
+  const result = await res.json();
+  document.getElementById("msg").innerText = result.message;
+
+  if (res.ok) {
+    window.location.href = "login.html";
+  }
+});
+</script>
+
+</body>
+</html>

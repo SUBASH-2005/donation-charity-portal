@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Donation Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+
+</head>
+<body>
+
+<div class="navbar">
+  <h2>Donation Portal</h2>
+  <div>
+    <a href="register.html">Register</a>
+    <a href="login.html">Login</a>
+    <a href="donate.html">Donate</a>
+    <a href="admin.html">Admin</a>
+  </div>
+</div>
+
+<div class="container">
+  <h1>Welcome to Donation & Charity Management Portal</h1>
+
+  <div class="summary">
+    <div class="card">
+      <h3>Total Campaigns</h3>
+      <p id="campaignCount">0</p>
+    </div>
+    <div class="card">
+      <h3>Total Donations</h3>
+      <p id="totalAmount">₹0</p>
+    </div>
+  </div>
+</div>
+
+<script>
+async function loadSummary() {
+  const campaigns = await fetch("/api/campaigns").then(res => res.json());
+  document.getElementById("campaignCount").innerText = campaigns.length;
+
+  let total = 0;
+  campaigns.forEach(c => total += c.collectedAmount);
+  document.getElementById("totalAmount").innerText = "₹" + total;
+}
+loadSummary();
+</script>
+
+</body>
+</html>

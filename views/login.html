@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login | Donation Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+
+
+</head>
+<body>
+<div class="navbar">
+  <h2>Donation Portal</h2>
+  <div>
+    <a href="index.html">Home</a>
+    <a href="register.html">Register</a>
+    <a href="login.html">Login</a>
+    <a href="donate.html">Donate</a>
+    <a href="admin.html">Admin</a>
+  </div>
+</div>
+
+
+<h2>User Login</h2>
+
+<form id="loginForm">
+  <input type="email" id="email" placeholder="Email" required><br><br>
+  <input type="password" id="password" placeholder="Password" required><br><br>
+  <button type="submit">Login</button>
+</form>
+
+<p id="msg"></p>
+
+<script>
+document.getElementById("loginForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  const data = {
+    email: document.getElementById("email").value,
+    password: document.getElementById("password").value
+  };
+
+  const res = await fetch("/api/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+
+  const result = await res.json();
+  document.getElementById("msg").innerText = result.message;
+
+  if (res.ok) {
+    window.location.href = "donate.html";
+  }
+});
+</script>
+
+</body>
+</html>

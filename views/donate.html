@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Donate | Donation Portal</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+  <h2>Donation Portal</h2>
+  <div>
+    <a href="index.html">Home</a>
+    <a href="donate.html">Donate</a>
+    <a href="admin.html">Admin</a>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="container">
+  <h2>Make a Donation</h2>
+
+  <form onsubmit="donate(event)">
+    <input type="text" id="user" placeholder="Donor Name" required>
+
+    <select id="campaign" required>
+      <option value="">Select Campaign</option>
+    </select>
+
+    <input type="number" id="amount" placeholder="Donation Amount" required>
+
+    <button type="submit">Donate</button>
+  </form>
+
+  <p id="msg"></p>
+</div>
+
+<script>
+async function loadCampaigns() {
+  const data = await fetch("/api/campaigns").then(res => res.json());
+  const select = document.getElementById("campaign");
+
+  data.forEach(c => {
+    const option = document.createElement("option");
+    option.value = c.title;
+    option.textContent = c.title;
+    select.appendChild(option);
+  });
+}
+loadCampaigns();
+
+async function donate(event) {
+  event.preventDefault();
+
+  const user = document.getElementById("user").value;
+  const campaign = document.getElementById("campaign").value;
+  const amount = document.getElementById("amount").value;
+
+  if (!user || !campaign || !amount) {
+    document.getElementById("msg").innerText = "All fields are required";
+    return;
+  }
+
+  const res = await fetch("/api/donations", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      user,
+      campaign,
+      amount: Number(amount)
+    })
+  });
+
+  const result = await res.json();
+  document.getElementById("msg").innerText = result.message;
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin</title>
+  <link rel="stylesheet" href="/css/style.css">
+
+</head>
+<body>
+
+<div class="navbar">
+  <h2>Donation Portal</h2>
+  <div>
+    <a href="index.html">Home</a>
+  </div>
+</div>
+
+<div class="container">
+  <h2>Add New Campaign</h2>
+
+<form onsubmit="addCampaign(event)">
+  <input type="text" id="title" placeholder="Campaign Title" required>
+  <textarea id="description" placeholder="Campaign Description" required></textarea>
+  <input type="number" id="targetAmount" placeholder="Target Amount" required>
+  <button type="submit">Add Campaign</button>
+</form>
+
+<hr style="margin:40px 0;">
+
+  <h2>Donation History</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>User</th>
+        <th>Campaign</th>
+        <th>Amount</th>
+        <th>Date</th>
+      </tr>
+    </thead>
+    <tbody id="donationTable"></tbody>
+  </table>
+</div>
+
+<script>
+async function loadDonations() {
+  const data = await fetch("/api/donations").then(res => res.json());
+  const table = document.getElementById("donationTable");
+
+  data.forEach(d => {
+    const row = `
+      <tr>
+        <td>${d.user}</td>
+        <td>${d.campaign}</td>
+        <td>₹${d.amount}</td>
+        <td>${new Date(d.date).toLocaleDateString()}</td>
+      </tr>`;
+    table.innerHTML += row;
+  });
+}
+loadDonations();
+</script>
+<script>
+async function addCampaign(event) {
+  event.preventDefault();
+
+  const title = document.getElementById("title").value;
+  const description = document.getElementById("description").value;
+  const targetAmount = document.getElementById("targetAmount").value;
+
+  const res = await fetch("/api/campaigns", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      title,
+      description,
+      targetAmount: Number(targetAmount)
+    })
+  });
+
+  const result = await res.json();
+  alert("Campaign Added Successfully");
+
+  document.getElementById("title").value = "";
+  document.getElementById("description").value = "";
+  document.getElementById("targetAmount").value = "";
+}
+</script>
+
+
+</body>
+</html>
